@@ -77,11 +77,11 @@ class personnage extends _model {
         //On construit la requête SELECT
         $strRequete = "SELECT `id`, `password` FROM `$this->table` WHERE `pseudo` = :pseudo ";
         $arrayParam = [
-            ":mail" => $strLogin
+            ":pseudo" => $strLogin
         ];
 
         //On prépare la requête
-        global $bdd;
+        $bdd = static::bdd();
         $objRequete = $bdd->prepare($strRequete);
 
         //On exécute la requête avec les parmaètres
@@ -124,15 +124,15 @@ class personnage extends _model {
 
         //On prépare la requête
         $bdd = static::bdd();
-        $req = $bdd->prepare($strRequete);
+        $objRequete = $bdd->prepare($strRequete);
 
         //On exécute la requête avec ses paramètres et on gère les erreurs
-        if ( ! $req->execute($arrayParam)) { 
+        if ( ! $objRequete->execute($arrayParam)) { 
             return false;
         }
 
         //On récupère les résultats
-        $arrayResultats = $req->fetchAll(PDO::FETCH_ASSOC);
+        $arrayResultats = $objRequete->fetchAll(PDO::FETCH_ASSOC);
         //S'il n'y a pas de résultat, le pseudo est disponible
         if(empty($arrayResultats)) {
             return true;

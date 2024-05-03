@@ -38,6 +38,9 @@ if($boolResultat === true) {
     if($boolResultat === false) {
         $arrayErreurs[] = "La connexion a échouée !";
     }
+    else {
+        $objSession->connect($objPersonnage->id());
+    }
 }
 
 /**
@@ -45,15 +48,9 @@ if($boolResultat === true) {
  */
 //Si on est déjà connecté on affiche directement l'écran de jeu
 if($objSession->isConnected()) {
-    require_once "templates/pages/ecran_jeu.php";
-}
-//Sinon on affiche la page d'accueil
-else if($boolResultat === true){
-    $message = "Votre personnage a été créé avec succès !";
-    $success = $boolResultat;
-    require_once "templates/pages/form_login.php";
+    header("Location:charger_partie.php");
 }
 else {
     $strErreur = implode("<br>",$arrayErreurs);
-    require_once "templates/pages/form_crea_personnage.php";
+    require_once "templates/pages/form_login.php";
 }

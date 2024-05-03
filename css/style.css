@@ -110,9 +110,11 @@ a:hover {
 }
 .info {
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 1.5rem;
     margin-top: 5px;
     color: green;
+    font-family: "Tekken";
+    letter-spacing: 0.5rem;
 }
 
 /* Bouton Back */
@@ -120,6 +122,14 @@ a.btn-back {
     position: fixed;
     left: 40px;
     top: 40px;
+}
+a.btn-deconnexion {
+    position: fixed;
+    left: 40px;
+    top: 40px;
+    padding: 0px;
+    border: none;
+    background-color: transparent;
 }
 
 /********** Accueil *********/
@@ -261,3 +271,95 @@ form.connexion input[type=submit] {
 form.connexion input[type=submit]:hover {
     transform: scale(1.15);
 }
+
+/********** Ecran de jeu *********/
+/* Général */
+h1.ingame {
+    font-size: 2rem;
+    color:rgb(218,165,32);
+    width: 100%;
+    height: 10vh;
+}
+section.personnage {
+    height: 50vh;
+    width: 100%;
+    margin-bottom: 20px;
+}
+div.avancer{
+    width: 20%;
+}
+div.personnage{
+    width: 60%;
+    height:100%;
+    padding: 20px;
+}
+div.reculer{
+    width: 20%;
+}
+img.personnage{
+    height: 100%;
+}
+section.infos {
+    height: 35vh;
+    width: 100%;
+}
+div.evenements {
+    width: 45%;
+    height: 100%;
+    overflow-y: auto;
+}
+div.adversaires {
+    width: 45%;
+    height: 100%;
+    overflow-y: auto;
+}
+div.evenements th {
+    background-color: rgb(218,165,32);
+}
+div.adversaires th {
+    background-color: rgb(138, 0, 0);
+}
+table {
+    width: 100%;
+    max-height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-spacing: 0;
+}
+table th {
+    padding: 10px;
+    position: sticky;
+    top: 0;
+}
+table tbody tr {
+    height: 30px;
+}
+
+
+
+/* Etage Entrée */
+main.etage0 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage0-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
+
+/* Etage 1 */
+
+/* Etage 2 */
+
+/* Etage 3 */
+
+/* Etage 4 */
+
+/* Etage 5 */
+
+/* Etage 6 */
+
+/* Etage 7 */
+
+/* Etage 8 */
+
+/* Etage 9 */
+
+/* Etage Sortie */

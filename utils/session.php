@@ -6,7 +6,7 @@
 
 class _session {
 
-    protected $tableUser = "";
+    protected $tableUser = "personnage";
     protected $objUser;
     protected $id = 0;
 
