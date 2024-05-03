@@ -13,7 +13,7 @@ class _session {
     protected static $objSession; //Objet unique sur la classe session
 
     //Méthode pour travailler avec une instance unique sur cette classe
-    static function getSession(){
+    public static function getSession(){
         if(empty(static::$objSession))
             static::$objSession = new _session();
 

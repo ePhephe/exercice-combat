@@ -4,10 +4,12 @@
  * Utilitaire : Vérification de la connexion
  */
 
-if( ! session_isconnected()) {
+$objSession = _session::getSession();
+
+if( ! $objSession->isConnected()) {
     include_once "templates/pages/form_login.php";
     exit;
 }
 else {
-    $objCompte = session_userconnected();
+    $objUser = $objSession->userConnected();
 }

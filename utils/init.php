@@ -18,13 +18,9 @@ error_reporting(E_ALL);
 include_once "utils/model.php";
 
 //Classes de nos objets de base de données
-include_once "modeles/artiste.php";
-include_once "modeles/compte.php";
-include_once "modeles/concert.php";
-include_once "modeles/conversation.php";
-include_once "modeles/message.php";
-include_once "modeles/organisateur.php";
-include_once "modeles/representation.php";
+include_once "modeles/action.php";
+include_once "modeles/personnage.php";
+include_once "modeles/piece.php";
 
 /**
  * Gestion de la session

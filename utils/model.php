@@ -105,7 +105,7 @@ class _model {
      */
     function __get($name){
         if(array_key_exists($name,$this->fields)){
-            return $this->fields[$name];
+            return $this->values[$name];
         }
         else if($name === "id") {
             return $this->id;
@@ -189,7 +189,7 @@ class _model {
       */
      static function bdd() {
         if(empty(static::$bdd)) {
-            static::$bdd = new PDO("mysql:host=localhost;dbname=projets_concert_mdurand;charset=UTF8","mdurand","ac2dmTM8q?M");;
+            static::$bdd = new PDO("mysql:host=localhost;dbname=projets_combat_mdurand;charset=UTF8","mdurand","ac2dmTM8q?M");;
             static::$bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
             return static::$bdd;
         }
