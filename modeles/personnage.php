@@ -174,6 +174,7 @@ class personnage extends _model {
         }
 
         return true;
+
     }
 
     /**
@@ -205,8 +206,13 @@ class personnage extends _model {
         //On récupère la liste des personnages qui sont dans la même pièce que le personnage courant et vivant
         $arrayPersonnages = $this->list([
             ["champ"=>"piece_actuelle","valeur"=>$this->values["piece_actuelle"],"operateur"=>"="],
+            ["champ"=>"id","valeur"=>$this->id(),"operateur"=>"<>"],
             ["champ"=>"etat","valeur"=>"V","operateur"=>"="]
         ]);
+
+        if($arrayPersonnages === false){
+            $arrayPersonnages= [];
+        }
 
         return $arrayPersonnages;
     }
@@ -216,13 +222,17 @@ class personnage extends _model {
      *
      * @return array Tableau indexé sur l'id d'actions qui concernent le personnage
      */
-    function listActionsPersonnage(){
+    function listEvenements(){
         //On instancie un objet de la classe action
         $objAction = new action();
         //On récupère la liste des actions dont le personnage est à l'initiative ou dont il est la cible
-        $arrayPersonnages = $this->list([["champ"=>"piece_actuelle","valeur"=>$this->values["piece_actuelle"],"operateur"=>"="]]);
+        $arrayActions = $objAction->listActionsPersonnage($this->id());
 
-        return $arrayPersonnages;
+        if($arrayActions === false){
+            $arrayActions= [];
+        }
+
+        return $arrayActions;
     }
     
     /**
@@ -252,31 +262,25 @@ class personnage extends _model {
     /**
      * Déclenche l'action d'avancer d'une pièce
      *
-     * @param  integer $intRoom Pièce que le personnage doit atteindre
      * @return boolean True si l'action est validée sinon False
      */
-    function avancer($intRoom){
+    function avancer(){
         //On instancie l'objet de la pièce à atteindre
-        $objNewRoom = new piece($intRoom);
+        $objNewRoom = new piece($this->get("piece_actuelle")->id()+1);
 
-        //On vérifie que l'on peut bien avancer (la pièce est bien la suivante par rapport à la position)
-        if($intRoom == $this->get("piece_actuelle")->id()+1){
-            //On regarde si le personnage a assez de points d'agilité            
-            if($objNewRoom->get("numero")<=$this->get("point_d_agilite")){
-                //On soustrait les points d'agilité
-                $this->set("point_d_agilite",$this->get("point_d_agilite")-$objNewRoom->get("numero"));
-                //On définit la nouvelle pièce du personnage
-                $this->set("piece_actuelle", $intRoom);
-                //On met à jour le personnage
-                $this->update();
+        //On calcule les nouveaux point d'agilité
+        $newPda = $this->get("points_d_agilite") - $objNewRoom->get("numero");
+        if($newPda>=0) {
+            $this->set("points_d_agilite",$newPda);
+                
+            //On modifier la pièce actuelle du personnage
+            $this->set("piece_actuelle",$objNewRoom->id());
+            //On met à jour le personnage
+            $this->update();
 
-                $this->enregistrerAction("DPA",$this);
+            $this->enregistrerAction("DPA",$this);
 
-                return true;
-            }
-            else {
-                return false;
-            }
+            return true;
         }
         else {
             return false;
@@ -286,28 +290,24 @@ class personnage extends _model {
     /**
      * Déclenche l'action de reculer d'une pièce
      *
-     * @param  integer $intRoom Pièce que le personnage doit atteindre
      * @return boolean True si l'action est validée sinon False
      */
-    function reculer($intRoom){
-        //On vérifie que l'on peut effectuer le mouvement (La pièce est bien précédente et pas inférieur à l'arrivée)
-        if($intRoom == $this->get("piece_actuelle")->id()-1 && $intRoom >= 0){
-            //On calcule les nouveaux point de vie
-            $newPdv = $this->get("points_de_vie") + $intRoom;
-            $this->set("points_de_vie",$newPdv);
+    function reculer(){
+        //On instancie l'objet de la pièce à atteindre
+        $objNewRoom = new piece($this->get("piece_actuelle")->id()-1);
+
+        //On calcule les nouveaux point de vie
+        $newPdv = $this->get("points_de_vie") + $objNewRoom->get("numero");
+        $this->set("points_de_vie",$newPdv);
             
-            //On modifier la pièce actuelle du personnage
-            $this->set("piece_actuelle",$intRoom);
-            //On met à jour le personnage
-            $this->update();
+        //On modifier la pièce actuelle du personnage
+        $this->set("piece_actuelle",$objNewRoom->id());
+        //On met à jour le personnage
+        $this->update();
 
-            $this->enregistrerAction("DPR",$this);
+        $this->enregistrerAction("DPR",$this);
 
-            return true;
-        }
-        else {
-            return false;
-        }
+        return true;
     }
     
     /**
@@ -316,26 +316,31 @@ class personnage extends _model {
      * @param  mixed $strCarac Caractéristique à augmenter
      * @return boolean True si l'action a été validé sinon False
      */
-    function transformPoints($strCarac) {
-        if($strCarac === "FOR") {
-            $newForce = $this->get("point_de_force") + 1;
-            $newRes = $this->get("point_de_resistance") - 1;
+    function transformPoint($strCarac) {
+        if($this->get("points_d_agilite")>=3) {
+            if($strCarac === "FOR") {
+                $newForce = $this->get("points_de_force") + 1;
+                $newRes = $this->get("points_de_resistance") - 1;
+            }
+            else {
+                $newForce = $this->get("points_de_force") - 1;
+                $newRes = $this->get("points_de_resistance") + 1;
+            }
+            $newAgilite = $this->get("points_d_agilite") - 3;
+
+            $this->set("points_d_agilite",$newAgilite);
+            $this->set("points_de_force",$newForce);
+            $this->set("points_de_resistance",$newRes);
+
+            $this->update();
+
+            $this->enregistrerAction("TFP",$this);
+
+            return true;
         }
         else {
-            $newForce = $this->get("point_de_force") - 1;
-            $newRes = $this->get("point_de_resistance") + 1;
+            return false;
         }
-        $newAgilite = $this->get("point_d_agilite") - 3;
-
-        $this->set("point_d_agilite",$newAgilite);
-        $this->set("point_de_force",$newForce);
-        $this->set("point_de_resistance",$newRes);
-
-        $this->update();
-
-        $this->enregistrerAction("TFP",$this);
-
-        return true;
     }
 
     /**
@@ -364,6 +369,7 @@ class personnage extends _model {
                     $resultat = "You win !";
                     //On gagne 1 point d'agilité
                     $intNewPda = $this->get("points_d_agilite") + 1;
+                    $intNewPdv = $this->get("points_de_vie");
                     //Si on est déjà au maximum de l'agilité
                     if($intNewPda > $this->fields["points_d_agilite"]["max"])
                         $intNewPdv = $this->get("points_de_vie") + 1;
@@ -377,7 +383,7 @@ class personnage extends _model {
                     }
                     //On initialise les nouvelles valeurs
                     $this->set("points_de_vie",$intNewPdv);
-                    $this->set("point_d_agilite",$intNewPda);
+                    $this->set("points_d_agilite",$intNewPda);
                     //On sauvegarde tous les changements
                     $this->update();
                     
@@ -485,7 +491,7 @@ class personnage extends _model {
             }
             else {
                 //On subit en dégâts la différence entre l'attaque et la résistance
-                $intNewPdv = $intPuissanceAttaque - $this->get("points_de_resistance");
+                $intNewPdv = $this->get("points_de_vie") - ($intPuissanceAttaque - $this->get("points_de_resistance"));
                 $this->set("points_de_vie",$intNewPdv);
                 $this->update();
                 //On enregistre l'action

@@ -94,10 +94,28 @@ class _model {
                     return "";
                 case 'number':
                     return 0;
+                case 'object':
+                    return new $this->fields[$fieldName]["nom_objet"]();
                 default:
                     return "";
             }
         }
+    }
+
+    /**
+     * Retourne la valeur pour tous les attributs sous forme d'un tableau
+     *
+     * @return array Ensemble des champs dans un tableau associatif
+     */
+    function getToTab() {
+        //Initialisation du tableau
+        $arrayFields = [];
+        //On parcourt tous les champs
+        foreach ($this->fields as $cle => $champ) {
+            $arrayFields[$cle] = $this->values[$cle];
+        }
+
+        return $arrayFields;
     }
     
     /**
@@ -427,8 +445,12 @@ class _model {
         if(!empty($arrayFiltres)) {
             $arrayReqFiltres = [];
             foreach ($arrayFiltres as $index => $filtre) {
-                if(array_key_exists($filtre["champ"],$this->fields)) {
-                    if($this->fields[$filtre["champ"]]["type"] === "text") {
+                if(array_key_exists($filtre["champ"],$this->fields) || $filtre["champ"]==="id") {
+                    if($filtre["champ"]==="id") {
+                        $arrayReqFiltres[] = $filtre["champ"] . " " . $filtre["operateur"] . " :".$filtre["champ"].$index;
+                        $arrayParam[":".$filtre["champ"].$index] = $filtre["valeur"];
+                    }
+                    else if($this->fields[$filtre["champ"]]["type"] === "text") {
                         $arrayReqFiltres[] = "UPPER(".$filtre["champ"].") " . $filtre["operateur"] . " :".$filtre["champ"].$index;
                         if($filtre["operateur"] === "LIKE"){
                             $arrayParam[":".$filtre["champ"].$index] = "%".strtoupper($filtre["valeur"])."%";

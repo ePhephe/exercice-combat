@@ -18,6 +18,7 @@ require_once "utils/verif_connexion_json.php";
 //On récupère la salle courrante
 if(!isSet($_GET["idSalle"])){
     $arrayRetour["succes"] = false;
+    $arrayRetour["raison"] = "param";
     $arrayRetour["message"] = "Aucune salle passée en paramètre ! ";
 }
 else {
@@ -36,15 +37,18 @@ if( ! $objPersonnage->stillAlive()) {
     $objSession->deconnect();
     //On prépare le message d'information
     $arrayRetour["succes"] = false;
+    $arrayRetour["raison"] = "mort";
     $arrayRetour["message"] = "Vous êtes mort au combat !";
 }
 else {
     if($objPersonnage->waiting($idSalle)){
         $arrayRetour["succes"] = true;
         $arrayRetour["message"] = "Vous avez récupéré 1 point d'agilité ! ";
+        $arrayRetour["personnage"] = $objPersonnage->getToTab();
     }
     else {
         $arrayRetour["succes"] = false;
+        $arrayRetour["raison"] = "echec";
         $arrayRetour["message"] = "Vous n'avez pas réussi à vous reposer !";
     }
 }

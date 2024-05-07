@@ -77,4 +77,53 @@ class action extends _model {
             $this->values["action"] = $this->fields["code"]["valeurs"][$valeur];
         }
     }
+
+    /**
+     * Retourne la liste des actions concernant un personnage
+     *
+     * @param   integer $id Identifiant du personne dont on veut les actions
+     * @return array Tableau indexé sur l'id d'actions qui concernent le personnage
+     */
+    function listActionsPersonnage($id){
+        //On construit la requête
+        $arrayFields = [];
+        $arrayParam = [];
+        foreach ($this->fields as $fieldName => $field) {
+            $arrayFields[] = "`$fieldName`";
+        }
+        $strRequete = "SELECT `id`, " . implode(",", $arrayFields) . " FROM `$this->table` ";
+        $strRequete .= "WHERE (`cible` = :idPerso OR `initiateur` = :idPerso) AND `code` <> 'ATT' ORDER BY `id` DESC";
+        $arrayParam[":idPerso"] = $id;
+
+        //On prépare la requête
+        $bdd = static::bdd();
+        $req = $bdd->prepare($strRequete);
+
+        //var_dump($strRequete);
+
+        //On exécute la requête avec ses paramètres et on gère les erreurs
+        if ( ! $req->execute($arrayParam)) { 
+            var_dump($strRequete);
+            var_dump($arrayParam);
+            return false;
+        }
+
+        //On récupère les résultats et on gère les erreurs
+        $arrayResultats = $req->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($arrayResultats)) {
+            return false;
+        }
+
+        // construire le tableau à retourner :
+        // Pour chaque élément de $liste, fabriquer un objet contact que l'on met dans le tableau final
+        $arrayObjResultat = [];
+        foreach ($arrayResultats as $unResultat) {
+            $newObj = new $this->table();
+            $newObj->loadFromTab($unResultat);
+
+            $arrayObjResultat[$unResultat["id"]] = $newObj;
+        }
+  
+        return $arrayObjResultat;
+    }
 }

@@ -36,7 +36,7 @@ if( ! $objPersonnage->stillAlive()) {
 $arrayAdversaires = $objPersonnage->listAdversaires();
 
 //On récupère les évènements de l'utilisateur
-//$arrayEvenements = $objPersonnage->listEvenements();
+$arrayEvenements = $objPersonnage->listEvenements();
 
 /**
  * Affichage du template

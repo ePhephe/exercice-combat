@@ -57,6 +57,9 @@ a:hover {
     background-color: rgb(218,165,32);
     border: 5px solid rgb(218,165,32);
 }
+img {
+    pointer-events: none;
+}
 
 /* Flexbox */
 .flex {
@@ -71,6 +74,9 @@ a:hover {
 }
 .justify-around {
     justify-content: space-around;
+}
+.justify-between {
+    justify-content: space-between;
 }
 .direction-column {
     flex-direction: column;
@@ -290,7 +296,7 @@ section.personnage {
     width: 100%;
     margin-bottom: 20px;
 }
-div.avancer{
+div.deplacement{
     width: 20%;
 }
 div.personnage{
@@ -298,18 +304,39 @@ div.personnage{
     height:100%;
     padding: 20px;
 }
-div.reculer{
-    width: 20%;
-}
 img.personnage{
     height: 75%;
 }
 section.infos {
-    height: 35vh;
+    height: 28vh;
+    width: 80%;
+}
+div.infos-personnage {
     width: 100%;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    font-weight: 700;
+}
+div.infos-personnage #pseudo {
+    font-family: "Tekken";
+    letter-spacing: 0.5rem;
+}
+div.infos-personnage table {
+    background-color: white;
+}
+div.infos-personnage table td {
+    width: 50px;
+    text-align: center;
+    padding: 0;
+}
+div.infos-personnage table td.libelle {
+    background-color: black;
+    color: white;
+    width: 80px;
 }
 div.evenements {
-    width: 55%;
+    width: 60%;
     height: 100%;
     overflow-y: auto;
 }
@@ -333,13 +360,13 @@ div.adversaires td.pdv {
     text-align: center;
     font-weight: 700;
 }
-div.adversaires td.pdv.enforme {
+section.infos .pdv.enforme {
     color: green;
 }
-div.adversaires td.pdv.blesse {
+section.infos .pdv.blesse {
     color: orange;
 }
-div.adversaires td.pdv.malenpoint {
+section.infos .pdv.malenpoint {
     color:red;
 }
 div.adversaires td.action {
@@ -375,21 +402,81 @@ main.etage0 {
 }
 
 /* Etage 1 */
+main.etage1 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage1-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
 
 /* Etage 2 */
+main.etage2 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage2-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
 
 /* Etage 3 */
+main.etage3 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage3-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
 
 /* Etage 4 */
+main.etage4 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage4-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
 
 /* Etage 5 */
+main.etage5 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage5-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
 
 /* Etage 6 */
+main.etage6 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage6-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
 
 /* Etage 7 */
+main.etage7 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage7-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
 
 /* Etage 8 */
+main.etage8 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage8-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
 
 /* Etage 9 */
+main.etage9 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage9-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
 
 /* Etage Sortie */
+main.etage10 {
+    background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%), url("../img/etage10-background.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
