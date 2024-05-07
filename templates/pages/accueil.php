@@ -13,6 +13,15 @@
             <a href="afficher_form_crea_personnage.php" title="Créer un nouveau personnage">creer un personnage</a>
             <a href="afficher_form_login.php" title="Connexion au jeu">connexion</a>
         </div>
+        <?php
+            if(isSet($success)) {
+        ?>
+        <div class="info">
+                <?= $message ?>
+        </div>
+        <?php
+            }
+        ?>
     </main>
 </body>
 </html>

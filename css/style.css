@@ -115,6 +115,7 @@ a:hover {
     color: green;
     font-family: "Tekken";
     letter-spacing: 0.5rem;
+    text-align: center;
 }
 
 /* Bouton Back */
@@ -128,6 +129,10 @@ a.btn-deconnexion {
     left: 40px;
     top: 40px;
     padding: 0px;
+    border: none;
+    background-color: transparent;
+}
+a.action {
     border: none;
     background-color: transparent;
 }
@@ -297,19 +302,14 @@ div.reculer{
     width: 20%;
 }
 img.personnage{
-    height: 100%;
+    height: 75%;
 }
 section.infos {
     height: 35vh;
     width: 100%;
 }
 div.evenements {
-    width: 45%;
-    height: 100%;
-    overflow-y: auto;
-}
-div.adversaires {
-    width: 45%;
+    width: 55%;
     height: 100%;
     overflow-y: auto;
 }
@@ -318,6 +318,33 @@ div.evenements th {
 }
 div.adversaires th {
     background-color: rgb(138, 0, 0);
+}
+div.adversaires {
+    width: 35%;
+    height: 100%;
+    overflow-y: auto;
+}
+div.adversaires td.pseudo {
+    font-family: "Tekken";
+    letter-spacing: 0.5rem;
+}
+div.adversaires td.pdv {
+    width: 150px;
+    text-align: center;
+    font-weight: 700;
+}
+div.adversaires td.pdv.enforme {
+    color: green;
+}
+div.adversaires td.pdv.blesse {
+    color: orange;
+}
+div.adversaires td.pdv.malenpoint {
+    color:red;
+}
+div.adversaires td.action {
+    text-align: center;
+    cursor: pointer;
 }
 table {
     width: 100%;
@@ -331,7 +358,10 @@ table th {
     top: 0;
 }
 table tbody tr {
-    height: 30px;
+    height: 40px;
+}
+table tbody td {
+    padding-left: 20px;
 }
 
 

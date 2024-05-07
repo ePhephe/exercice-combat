@@ -26,6 +26,11 @@ class personnage extends _model {
             "libelle"=>"Mot de passe",
             "unique" => "N"
         ],
+        "etat" =>  [
+            "type"=>"text",
+            "libelle"=>"Etat",
+            "unique" => "N"
+        ],
         "points_de_vie" =>  [
             "type"=>"number",
             "libelle"=>"Points de vie",
@@ -171,4 +176,366 @@ class personnage extends _model {
         return true;
     }
 
+    /**
+     * Vérifie que le personnage est vivant !
+     *
+     * @return boolean True si le personnage est vivant sinon False
+     */
+    function stillAlive(){
+        if($this->values["etat"] === "M"){
+            return false;
+        }
+        else if($this->values["points_de_vie"] <= 0) {
+            $this->set("etat","M");
+            $this->update();
+            $this->enregistrerAction("MRT",$this);
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    
+    /**
+     * Retourne la liste des adversaires disponibles pour le personnage
+     *
+     * @return array Tableau indexé sur l'id d'objets personnage
+     */
+    function listAdversaires(){
+        //On récupère la liste des personnages qui sont dans la même pièce que le personnage courant et vivant
+        $arrayPersonnages = $this->list([
+            ["champ"=>"piece_actuelle","valeur"=>$this->values["piece_actuelle"],"operateur"=>"="],
+            ["champ"=>"etat","valeur"=>"V","operateur"=>"="]
+        ]);
+
+        return $arrayPersonnages;
+    }
+
+    /**
+     * Retourne la liste des actions concernant un personnage
+     *
+     * @return array Tableau indexé sur l'id d'actions qui concernent le personnage
+     */
+    function listActionsPersonnage(){
+        //On instancie un objet de la classe action
+        $objAction = new action();
+        //On récupère la liste des actions dont le personnage est à l'initiative ou dont il est la cible
+        $arrayPersonnages = $this->list([["champ"=>"piece_actuelle","valeur"=>$this->values["piece_actuelle"],"operateur"=>"="]]);
+
+        return $arrayPersonnages;
+    }
+    
+    /**
+     * Déclenche l'action d'attente pour le personnage
+     *
+     * @param  integer $intRoom Pièce dans laquelle le personnage attend
+     * @return boolean True si l'action est validée sinon False
+     */
+    function waiting($intRoom){
+        //On vérifie que le personnage est bien toujours dans la pièce
+        if($intRoom == $this->get("piece_actuelle")->id()){
+            //On calcule les points d'agilités
+            $newAgilite = $this->get("points_d_agilite") + 1;
+            $this->set("points_d_agilite",$newAgilite);
+
+            $this->update();
+
+            $this->enregistrerAction("ATT",$this);
+
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Déclenche l'action d'avancer d'une pièce
+     *
+     * @param  integer $intRoom Pièce que le personnage doit atteindre
+     * @return boolean True si l'action est validée sinon False
+     */
+    function avancer($intRoom){
+        //On instancie l'objet de la pièce à atteindre
+        $objNewRoom = new piece($intRoom);
+
+        //On vérifie que l'on peut bien avancer (la pièce est bien la suivante par rapport à la position)
+        if($intRoom == $this->get("piece_actuelle")->id()+1){
+            //On regarde si le personnage a assez de points d'agilité            
+            if($objNewRoom->get("numero")<=$this->get("point_d_agilite")){
+                //On soustrait les points d'agilité
+                $this->set("point_d_agilite",$this->get("point_d_agilite")-$objNewRoom->get("numero"));
+                //On définit la nouvelle pièce du personnage
+                $this->set("piece_actuelle", $intRoom);
+                //On met à jour le personnage
+                $this->update();
+
+                $this->enregistrerAction("DPA",$this);
+
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Déclenche l'action de reculer d'une pièce
+     *
+     * @param  integer $intRoom Pièce que le personnage doit atteindre
+     * @return boolean True si l'action est validée sinon False
+     */
+    function reculer($intRoom){
+        //On vérifie que l'on peut effectuer le mouvement (La pièce est bien précédente et pas inférieur à l'arrivée)
+        if($intRoom == $this->get("piece_actuelle")->id()-1 && $intRoom >= 0){
+            //On calcule les nouveaux point de vie
+            $newPdv = $this->get("points_de_vie") + $intRoom;
+            $this->set("points_de_vie",$newPdv);
+            
+            //On modifier la pièce actuelle du personnage
+            $this->set("piece_actuelle",$intRoom);
+            //On met à jour le personnage
+            $this->update();
+
+            $this->enregistrerAction("DPR",$this);
+
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    /**
+     * Transforme un point de caractéristiques en un autre (FOR <-> RES)
+     *
+     * @param  mixed $strCarac Caractéristique à augmenter
+     * @return boolean True si l'action a été validé sinon False
+     */
+    function transformPoints($strCarac) {
+        if($strCarac === "FOR") {
+            $newForce = $this->get("point_de_force") + 1;
+            $newRes = $this->get("point_de_resistance") - 1;
+        }
+        else {
+            $newForce = $this->get("point_de_force") - 1;
+            $newRes = $this->get("point_de_resistance") + 1;
+        }
+        $newAgilite = $this->get("point_d_agilite") - 3;
+
+        $this->set("point_d_agilite",$newAgilite);
+        $this->set("point_de_force",$newForce);
+        $this->set("point_de_resistance",$newRes);
+
+        $this->update();
+
+        $this->enregistrerAction("TFP",$this);
+
+        return true;
+    }
+
+    /**
+     * Attaque un adversaire
+     *
+     * @param  integer $idAdversaire Identifiant de l'adversaire
+     * @return boolean True si l'action a été validé sinon False
+     */
+    function attaquer($idAdversaire) {
+        //On instance un objet du personnage adverse
+        $objAdversaire = new personnage($idAdversaire);
+        //On stocke les points de vie adverses actuels
+        $intPdvAdversaire = $objAdversaire->get("points_de_vie");
+
+        //On vérifie que les personnages sont bien dans la même pièce
+        if($this->get("piece_actuelle")->id() === $objAdversaire->get("piece_actuelle")->id()){
+            //On détermine la puissance de l'attaque
+            $intPuissanceAttaque = $this->get("points_de_force");
+
+            //On récupère le résultat de l'attaque subie par l'adversaire
+            $resultatEsquive = $objAdversaire->subirAttaque($this->id(),$intPuissanceAttaque);
+            //Selon le résultat
+            switch ($resultatEsquive) {
+                case 'victoire':
+                    //En cas de victoire
+                    $resultat = "You win !";
+                    //On gagne 1 point d'agilité
+                    $intNewPda = $this->get("points_d_agilite") + 1;
+                    //Si on est déjà au maximum de l'agilité
+                    if($intNewPda > $this->fields["points_d_agilite"]["max"])
+                        $intNewPdv = $this->get("points_de_vie") + 1;
+
+                    //On vérifie si on a tué l'adversaire
+                    if( ! $objAdversaire->stillAlive()){
+                        //Si l'adversaire est mort, on récupère ses points de vie pré-combat
+                        $intNewPdv = $this->get("points_de_vie") + $intPdvAdversaire;
+                        //On enregistre le résultalt
+                        $resultat = "You win ! Overkill !";
+                    }
+                    //On initialise les nouvelles valeurs
+                    $this->set("points_de_vie",$intNewPdv);
+                    $this->set("point_d_agilite",$intNewPda);
+                    //On sauvegarde tous les changements
+                    $this->update();
+                    
+                    break;
+                case 'egalite':
+                    # code...
+                    break;
+                case 'defaite':
+                    //On calcul les nouveau points de vie
+                    $intNewPdv = $this->get("points_de_vie") - 1;
+                    //On met à jour les points de vie
+                    $this->set("points_de_vie",$intNewPdv);
+                    //On enregistre ces changements
+                    $this->update();
+                    //On vérifie que le personnage est toujours vivant
+                    $this->stillAlive();
+                    //On enregistre le résultalt
+                    $resultat = "You loose !";
+                    break;
+                case 'esquive':
+                    //L'adversaire esquive
+                    //Si on a 10 en force ou plus
+                    if($this->get("points_de_force")>=10){
+                        //On perd un point de force
+                        $this->set("points_de_force",$this->get("points_de_force")-1);
+                        //On gagne un point de résistance
+                        $this->set("points_de_resistance",$this->get("points_de_resistance")+1);
+                        //On enregistre ces changements
+                        $this->update();
+                    }
+                    //On enregistre le résultalt
+                    $resultat = "Votre adversaire a esquivé ! ";
+                    break;
+                default:
+                    break;
+            }
+
+            //On enregistre l'action
+            $this->enregistrerAction("ATK",$this,$resultat,$objAdversaire);
+
+            return true;
+        }
+        else {
+            return false;
+        }        
+    }
+
+    /**
+     * Subit une attaque adverse
+     *
+     * @param  integer $idAdversaire Identifiant de l'adversaire
+     * @param  integer $intPuissanceAttaque Puissance de l'attaque adverse
+     * @return string Résultat du combat (victoire,egalite,defaite,esquive)
+     */
+    function subirAttaque($idAdversaire,$intPuissanceAttaque) {
+        //On instance un objet du personnage adverse
+        $objAdversaire = new personnage($idAdversaire);
+
+        //Si l'agilité est supérieure ou égale à l'attaque + 3
+        if($this->get("points_d_agilite") >= $intPuissanceAttaque+3){
+            //On perds un point d'agilité
+            $intNewPda = $this->get("points_d_agilite") - 1;
+            $this->set("points_d_agilite",$intNewPda);
+            $this->update();
+            
+            //On enregistre l'action
+            $this->enregistrerAction("SBA",$this,"Esquive réussie !",$objAdversaire);
+
+            return "esquive";
+        }
+        //Si la force est supérieure à l'attaque
+        else if ($this->get("points_de_force") > $intPuissanceAttaque){
+            $boolResultatRispote = $this->riposte($idAdversaire);
+            //Si la riposte réussit
+            if($boolResultatRispote === true) {
+                //On gagne un point de vie
+                $intNewPdv = $this->get("points_de_vie") + 1;
+                $this->set("points_de_vie",$intNewPdv);
+                $this->update();
+
+                //On enregistre l'action
+                $this->enregistrerAction("SBA",$this,"Riposte réussie !",$objAdversaire);
+
+                return "defaite";
+            }
+            else {
+                //On perd 2 points de vie
+                $intNewPdv = $this->get("points_de_vie") - 2;
+                $this->set("points_de_vie",$intNewPdv);
+                $this->update();
+
+                //On enregistre l'action
+                $this->enregistrerAction("SBA",$this,"Riposte échouée !",$objAdversaire);
+
+                return "victoire";
+            }
+        }
+        //On se défend
+        else {
+            //Si la résistance est supérieure ou égale à l'attaque
+            if($this->get("points_de_resistance") >= $intPuissanceAttaque){
+                //On enregistre l'action
+                $this->enregistrerAction("SBA",$this,"Défense réussie !",$objAdversaire);
+                return "defaite";
+            }
+            else {
+                //On subit en dégâts la différence entre l'attaque et la résistance
+                $intNewPdv = $intPuissanceAttaque - $this->get("points_de_resistance");
+                $this->set("points_de_vie",$intNewPdv);
+                $this->update();
+                //On enregistre l'action
+                $this->enregistrerAction("SBA",$this,"Défense échouée !",$objAdversaire);
+                return "victoire";
+            }
+        }
+    }
+
+    /**
+     * Riposte à une attaque adverse
+     *
+     * @param  integer $idAdversaire Identifiant de l'adversaire
+     * @return boolean True si la ripose réussie sinon False
+     */
+    function riposte($idAdversaire) {
+        //On instance un objet du personnage adverse
+        $objAdversaire = new personnage($idAdversaire);
+
+        //Notre adversaire subit donc une attaque
+        $resultatRiposte = $objAdversaire->subirAttaque($this->id(),$this->get("points_de_force"));
+        
+        if($resultatRiposte === "victoire")
+            return true;
+        else
+            return false;
+    }
+    
+    
+    /**
+     * Enregistre une action dans le journal
+     *
+     * @param  string $strAction Code de l'action à enregistrer
+     * @param  object $objPersoInit Objet du personnage à l'initiative de l'action
+     * @param  mixed $objPersoCible Objet du personnage cible de l'action (facultatif)
+     * @return void
+     */
+    function enregistrerAction($strAction,$objPersoInit,$strDescription = "",$objPersoCible = null){
+        //On instancie un objet action
+        $objAction = new action();
+
+        //On initialise les variables
+        $objAction->set("code",$strAction);
+        $objAction->set("description",$strDescription);
+        $objAction->set("date",date("Y-m-d H:m:s"));
+        $objAction->set("initiateur",$objPersoInit->id());
+        if($objPersoCible != null)
+            $objAction->set("cible",$objPersoCible->id());
+
+        //On insère l'action
+        $objAction->insert();
+    }
 }

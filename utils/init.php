@@ -14,15 +14,20 @@ error_reporting(E_ALL);
  * Chargement des librairies
  */
 
-//Modèle pour les classes
-include_once "utils/model.php";
-
-//Classes de nos objets de base de données
-include_once "modeles/action.php";
-include_once "modeles/personnage.php";
-include_once "modeles/piece.php";
-
 /**
- * Gestion de la session
+ * Charger la classe passée en paramètre
+ *
+ * @param  string $nameClass Nom de la classe
+ * @return void
  */
-include_once "utils/session.php";
+function autoLoadClass($nameClass) {
+    //
+    if(substr($nameClass,0,1) == "_") {
+        include_once "utils/".substr($nameClass,1).".php";
+    }
+    else if(file_exists("modeles/$nameClass.php")) {
+        include_once "modeles/$nameClass.php";
+    }
+}
+//Enregistrement de la fonction de chargement automatique dans le système
+spl_autoload_register("autoLoadClass");

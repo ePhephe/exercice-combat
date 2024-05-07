@@ -67,6 +67,10 @@ class _model {
      * @return mixed Valeur de l'attribut
      */
     function get($fieldName) {
+        //On vérifie si une méthode get_fieldname existe dans la classe, dans ce cas on l'appelle
+        if(method_exists($this,"get_$fieldName"))
+            return call_user_func([$this,"get_$fieldName"]);
+
         // Si la valeur existe (isset(....)) retourne la valeur sinon on retourne une valeur par défaut en fonction du type du champ
         if (isset($this->values[$fieldName])) {
             //On regarde si le type du champ est un objet(lien)
@@ -133,6 +137,22 @@ class _model {
      * @return boolean - True si la valeur est acceptée sinon False
      */
     function set($fieldName, $value) {
+        //On vérifie si une méthode get_fieldname existe dans la classe, dans ce cas on l'appelle
+        if(method_exists($this,"set_$fieldName"))
+            return call_user_func([$this,"set_$fieldName"],$value);
+
+        if(array_key_exists("max",$this->fields[$fieldName])) {
+            if($value > $this->fields[$fieldName]["max"])                
+                $value = $this->fields[$fieldName]["max"];
+        }
+
+        
+
+        if(array_key_exists("min",$this->fields[$fieldName])) {
+            if($value < $this->fields[$fieldName]["min"])
+                $value = $this->fields[$fieldName]["min"];
+        }
+
         $this->values[$fieldName] = $value;
         return true;
     }

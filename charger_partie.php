@@ -22,9 +22,18 @@ require_once "utils/verif_connexion.php";
  */
 //On récupère les informations du personnage
 $objPersonnage = $objSession->userConnected();
+//Si le personnage est mort, on déconnecte et on affiche la page de connexion
+if( ! $objPersonnage->stillAlive()) {
+    $objSession->deconnect();
+    //On prépare le message d'information
+    $success = false;
+    $message = "Vous êtes mort au combat !<br> Créez un nouveau personnage !";
+    require_once "templates/pages/accueil.php";
+    exit;
+}
 
 //On récupère tous les adversaires dans la salle
-//$arrayAdversaires = $objPersonnage->listAdversaires();
+$arrayAdversaires = $objPersonnage->listAdversaires();
 
 //On récupère les évènements de l'utilisateur
 //$arrayEvenements = $objPersonnage->listEvenements();

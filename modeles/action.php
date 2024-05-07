@@ -25,12 +25,18 @@ class action extends _model {
                 "ATT" => "Attente dans la pièce",
                 "ATK" => "Attaqué un adversaire",
                 "SBA" => "Subit une attaque",
-                "RPT" => "Riposté"
+                "RPT" => "Riposté",
+                "MRT" => "Mort"
             ] 
         ],
         "action" =>  [
             "type"=>"text",
             "libelle"=>"Libellé de l'action",
+            "unique" => "N"
+        ],
+        "description" =>  [
+            "type"=>"text",
+            "libelle"=>"Description de l'action",
             "unique" => "N"
         ],
         "initiateur" =>  [
@@ -56,5 +62,19 @@ class action extends _model {
     /**
      * Méthodes
      */
-
+    
+    /**
+     * Définit la valeur du champ code et le libellé de l'action correspondante
+     *
+     * @param  mixed $valeur Valeur du champ
+     * @return void
+     */
+    function set_code($valeur){
+        //On vérifie que le code de l'action existe
+        if(array_key_exists($valeur,$this->fields["code"]["valeurs"])){
+            //On récupère le libellé de l'action correspondant au code
+            $this->values["code"] = $valeur;
+            $this->values["action"] = $this->fields["code"]["valeurs"][$valeur];
+        }
+    }
 }
