@@ -450,7 +450,7 @@ class personnage extends _model {
             $this->update();
             
             //On enregistre l'action
-            $this->enregistrerAction("SBA",$this,"Esquive réussie !",$objAdversaire);
+            $this->enregistrerAction("ESQ",$this,"Esquive réussie !",$objAdversaire);
 
             return "esquive";
         }
@@ -465,7 +465,7 @@ class personnage extends _model {
                 $this->update();
 
                 //On enregistre l'action
-                $this->enregistrerAction("SBA",$this,"Riposte réussie !",$objAdversaire);
+                $this->enregistrerAction("RPT",$this,"Riposte réussie !",$objAdversaire);
 
                 return "defaite";
             }
@@ -476,7 +476,7 @@ class personnage extends _model {
                 $this->update();
 
                 //On enregistre l'action
-                $this->enregistrerAction("SBA",$this,"Riposte échouée !",$objAdversaire);
+                $this->enregistrerAction("RPT",$this,"Riposte échouée !",$objAdversaire);
 
                 return "victoire";
             }

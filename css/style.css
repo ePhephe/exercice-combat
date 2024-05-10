@@ -305,7 +305,7 @@ div.personnage{
     padding: 20px;
 }
 img.personnage{
-    height: 75%;
+    height: 100%;
 }
 section.infos {
     height: 28vh;
@@ -333,7 +333,15 @@ div.infos-personnage table td {
 div.infos-personnage table td.libelle {
     background-color: black;
     color: white;
-    width: 80px;
+    width: 100px;
+}
+div.infos-personnage a.action.transform{
+    padding: 0;
+    display: inline;
+    margin-left: 10px;
+}
+div.infos-personnage a.action.transform img{
+    width: 16px;
 }
 div.evenements {
     width: 60%;
@@ -342,6 +350,9 @@ div.evenements {
 }
 div.evenements th {
     background-color: rgb(218,165,32);
+}
+div.evenements td img{
+    width: 20px;
 }
 div.adversaires th {
     background-color: rgb(138, 0, 0);
@@ -390,8 +401,6 @@ table tbody tr {
 table tbody td {
     padding-left: 20px;
 }
-
-
 
 /* Etage Entrée */
 main.etage0 {
@@ -480,3 +489,57 @@ main.etage10 {
     width: 100%;
     height: 100vh;
 }
+
+/* Personnage animé */
+
+.animated-personnage {
+    background-image: url("../img/sprite_animated_personnage.png");
+    height:363px;
+    
+}
+
+.static {
+    animation: waiting 1s steps(3) infinite;
+    width: 214px;
+}
+
+.transform {
+    width: 200px;
+    animation: transform-point 1s steps(4) infinite;
+}
+
+.attack {
+    width: 441px;
+    animation: attack 1s steps(6) infinite;
+}
+
+@keyframes waiting {
+    from {
+        background-position-x: -214px;
+    }
+
+    to {
+        background-position-x: -856px;
+    }
+}
+
+@keyframes transform-point {
+    from {
+        background-position-x: -1056px;
+    }
+
+    to {
+        background-position-x: -1856px;
+    }
+}
+
+@keyframes attack {
+    from {
+        background-position-x: -2295px;
+    }
+
+    to {
+        background-position-x: -4942px;
+    }
+}
+

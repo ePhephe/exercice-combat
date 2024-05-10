@@ -114,6 +114,7 @@ class _model {
         foreach ($this->fields as $cle => $champ) {
             $arrayFields[$cle] = $this->values[$cle];
         }
+        $arrayFields["id"] = $this->id();
 
         return $arrayFields;
     }

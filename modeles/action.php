@@ -25,6 +25,7 @@ class action extends _model {
                 "ATT" => "Attente dans la pièce",
                 "ATK" => "Attaqué un adversaire",
                 "SBA" => "Subit une attaque",
+                "ESQ" => "Esquivé une attaque",
                 "RPT" => "Riposté",
                 "MRT" => "Mort"
             ] 

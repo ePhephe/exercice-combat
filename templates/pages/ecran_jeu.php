@@ -14,12 +14,8 @@
             <?php if($objPersonnage->get("piece_actuelle")->get("is_entree")==="N") { ?>
             <div class="deplacement flex justify-center align-center"><a href="action_deplacement.php?sens=REC">reculer</a></div>
             <?php } ?>
-            <div class="personnage flex justify-center align-center direction-column gap20">
-                <img class="personnage" src="img/sprite-personnage.png" alt="Image du personnage">
-                <div id="actionTransformer" class="flex gap20">
-                    <a class="flex align-center gap20" href="action_transformer.php?carac=RES">for <img src="img/transform_icon.png" alt="Icone d'échange de point"> res</a> 
-                    <a class="flex align-center gap20" href="action_transformer.php?carac=FOR">res <img src="img/transform_icon.png" alt="Icone d'échange de point"> for</a>
-                </div>
+            <div class="personnage flex align-center gap20">
+                <div class="animated-personnage static"></div>
             </div>
             <?php if($objPersonnage->get("piece_actuelle")->get("is_sortie")==="N") { ?>
             <div class="deplacement flex justify-center align-center"><a href="action_deplacement.php?sens=AVA">avancer</a></div>
@@ -39,9 +35,9 @@
                     <table class="stats-personnage">
                         <tbody>
                             <tr>
-                                <td class="libelle">FOR</td>
+                                <td class="libelle">FOR  <a class="action transform flex align-center gap20" href="action_transformer.php?carac=FOR"><img src="img/transform_icon.png" alt="Icone d'échange de point"></a></td>
                                 <td id="force"><?= $objPersonnage->get("points_de_force") ?></td>
-                                <td class="libelle">RES</td>
+                                <td class="libelle">RES <a class="action transform flex align-center gap20" href="action_transformer.php?carac=RES"><img src="img/transform_icon.png" alt="Icone d'échange de point"></a></td>
                                 <td id="resistance"><?= $objPersonnage->get("points_de_resistance") ?></td>
                                 <td class="libelle">AGI</td>
                                 <td id="agilite"><?= $objPersonnage->get("points_d_agilite") ?></td>
@@ -52,60 +48,23 @@
             </div>
             <div class="adversaires">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Adversaire</th>
-                            <th>Point de vie</th>
-                            <th></th>
-                        </tr>
-                    </thead>
                     <tbody>
-                    <?php
-                        foreach ($arrayAdversaires as $id => $unAdversaire) {
-                    ?>
-                        <tr>
-                            <td class="pseudo"><?= $unAdversaire->get("pseudo") ?></td>
-                            <td class="pdv <?php if($unAdversaire->get("points_de_vie")>75) echo "enforme"; elseif($unAdversaire->get("points_de_vie")>30) echo "blesse"; else echo "malenpoint"; ?>"><?= $unAdversaire->get("points_de_vie") ?> / 100</td>
-                            <td class="action"><a class="action attaque" href="action_attaquer.php?idAdversaire=<?= $unAdversaire->id() ?>"><img src="img/sword_icon.png" alt="Icone d'attaque"></a></td>
-                        </tr>
-                    <?php
-                        }
-                    ?>
+
                     </tbody>
                 </table>
             </div>
             <div class="evenements">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Initiateur</th>
-                            <th>Action</th>
-                            <th>Description</th>
-                            <th>Cible</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
                     <tbody>
-                    <?php
-                        foreach ($arrayEvenements as $id => $unEvenement) {
-                    ?>
-                        <tr>
-                            <td><?= $unEvenement->get("initiateur")->get("pseudo") ?></td>
-                            <td><?= $unEvenement->get("action") ?></td>
-                            <td><?= $unEvenement->get("description") ?></td>
-                            <td><?= ($unEvenement->get("cible")->id() != 0)?$unEvenement->get("cible")->get("pseudo") : "" ?></td>
-                            <td><?= $unEvenement->get("date") ?></td>
-                        </tr>
-                    <?php
-                        }
-                    ?>
+
                     </tbody>
                 </table>
             </div>
         </section>
     </main>
     <script>
-        let idSalle = <?= $objPersonnage->get("piece_actuelle")->id() ?>
+        let idSalle = <?= $objPersonnage->get("piece_actuelle")->id() ?>;
+        let idPerso = <?= $objPersonnage->id() ?>;
     </script>
     <script src="js/app.js"></script>
     <script src="js/ecran_jeu.js"></script>
