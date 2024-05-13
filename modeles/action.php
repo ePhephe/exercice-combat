@@ -93,7 +93,8 @@ class action extends _model {
             $arrayFields[] = "`$fieldName`";
         }
         $strRequete = "SELECT `id`, " . implode(",", $arrayFields) . " FROM `$this->table` ";
-        $strRequete .= "WHERE (`cible` = :idPerso OR `initiateur` = :idPerso) AND `code` <> 'ATT' ORDER BY `id` DESC";
+        $strRequete .= "WHERE (`cible` = :idPerso OR `initiateur` = :idPerso) AND `code` <> 'ATT' ORDER BY `id` DESC ";
+        $strRequete .= "LIMIT 0,100";
         $arrayParam[":idPerso"] = $id;
 
         //On prépare la requête

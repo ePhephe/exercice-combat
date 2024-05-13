@@ -7,6 +7,72 @@ let pointsVie = document.querySelector(`#pdv span`);
 let tabBodyAdversaires = document.querySelector(`.adversaires tbody`);
 let tabBodyActions = document.querySelector(`.evenements tbody`);
 let animatedPerso = document.querySelector(`.animated-personnage`);
+let divModal = document.querySelector(`.modal`);
+let divMessageModal = document.querySelector(`.modal div`);
+let main = document.querySelector(`main`);
+let h1 = document.querySelector(`h1`);
+let btnAvance = document.getElementById(`buttonAvance`);
+let aBtnAvance = document.querySelector(`#buttonRecule a`);
+let btnRecule = document.getElementById(`buttonRecule`);
+let aBtnRecule = document.querySelector(`#buttonAvance a`);
+
+/**
+ * Change le stage sur lequel évolue le personnage
+ * 
+ * @param {object} objPrevStage Stage sur lequel était le joueur avant
+ * @param {object} objStage Stage sur lequel est actuellement
+ */
+function changeStage(objPrevStage,objStage){
+    let h1HTML = ``;
+
+    //Gestion du fond de la page
+    main.classList.remove(`etage`+objPrevStage.numero);
+    main.classList.add(`etage`+objStage.numero);
+
+    //Gestion du H1
+    h1HTML += objStage.nom + ` [` + objStage.numero + `]`;
+    if(objStage.is_sortie == `O`) {
+        h1HTML += `<br><span>Vous êtes arrivé au bout, bravo guerrier !</span>`;
+    }
+    else if(objStage.is_entree == `O`){
+        h1HTML += `<br><span>Vous êtes à l'entrée, en avant !</span>`;
+    }
+    h1.innerHTML = h1HTML;
+
+    //Gestion des boutons Avancer et Reculer
+    setButtonAvancer(objStage);
+    setButtonReculer(objStage);
+}
+
+/**
+ * Met en place le bouton RECULER
+ * 
+ * @param {object} objStage Stage sur lequel est actuellement
+ */
+function setButtonAvancer(objStage){
+    console.log(objStage);
+    if(objStage.is_sortie == `N`) {
+        btnAvance.classList.remove(`d-none`);
+    }
+    else {
+        btnAvance.classList.add(`d-none`);
+    }
+}
+
+/**
+ * Met en place le bouton AVANCER
+ * 
+ * @param {object} objStage Stage sur lequel est actuellement
+ */
+function setButtonReculer(objStage){
+    console.log(objStage);
+    if(objStage.is_entree == `N`) {
+        btnRecule.classList.remove(`d-none`);
+    }
+    else {
+        btnRecule.classList.add(`d-none`);
+    }
+}
 
 /**
  * Remet en static l'animation du personnage
@@ -15,6 +81,33 @@ function personnageStatic(etat){
     animatedPerso.classList.add(`static`);
     animatedPerso.classList.remove(etat);
 }
+
+/**
+ * Masque le message de la modal
+ */
+function masqueModal(){
+    divModal.classList.add(`d-none`);
+    divMessageModal.innerHTML = ``;
+}
+
+/**
+ * Affiche le message de la modal
+ */
+function afficheModal(message,succes){
+    if(succes===true) {
+        divModal.classList.add(`succes`);
+        divModal.classList.remove(`echec`);
+    }
+    else {
+        divModal.classList.add(`echec`);
+        divModal.classList.remove(`succes`);
+    }
+    
+    divModal.classList.remove(`d-none`);
+    divMessageModal.innerHTML = message;
+    setTimeout(masqueModal,5000);
+}
+
 
 /**
  * Mets à jour les informations du personnage à l'écran
@@ -63,7 +156,6 @@ function listAdversaires(adversaires){
         attaque.addEventListener(`click`,(e)=>{
             //On arrête le fonctionement par défaut
             e.preventDefault();
-            console.log(e.target);
             //Appel du contrôleur pour transformer les points
             fetch(e.target.href).then(res => {
                 return res.json();
@@ -71,10 +163,13 @@ function listAdversaires(adversaires){
                 if(rep.succes === false){
                     if(rep.raison==="mort" || rep.raison==="deconnect"){
                         window.location.href = `index.php?logout=`+rep.raison;
+                    } else {
+                        afficheModal(rep.message,rep.succes);
                     }
                 }
                 else {
-                    majInfosPerso(rep.personnage);
+                    majInfos();
+                    afficheModal(rep.message,rep.succes);
                     animatedPerso.classList.remove(`static`);
                     animatedPerso.classList.add(`attack`);
                     setTimeout(personnageStatic,1000,`attack`);
@@ -181,16 +276,19 @@ function majInfos(){
  */
 function personnageAttente(){
     //Appel du contrôleur pour gérer l'attente dans la salle
-    fetch(`http://combat.mdurand.mywebecom.ovh/action_attendre.php?idSalle=`+idSalle).then(res => {
+    fetch(`http://combat.mdurand.mywebecom.ovh/action_attendre.php`).then(res => {
         return res.json();
     }).then(rep => {
         if(rep.succes === false){
             if(rep.raison==="mort" || rep.raison==="deconnect"){
                 window.location.href = `index.php?logout=`+rep.raison;
+            } else {
+                afficheModal(rep.message,rep.succes);
             }
         }
         else {
-            majInfosPerso(rep.personnage);
+            majInfos();
+            afficheModal(rep.message,rep.succes);
         }
         //console.log(rep);
     }).catch(err => {
@@ -199,7 +297,7 @@ function personnageAttente(){
 }
 
 //Timer pour l'attente dans une salle
-let timerAttente = setInterval(personnageAttente,30000);
+let timerAttente = setInterval(personnageAttente,10000);
 
 //On met un listener sur les boutons qui transforment un point
 aTransformPoint.forEach(bouton => {
@@ -214,10 +312,13 @@ aTransformPoint.forEach(bouton => {
             if(rep.succes === false){
                 if(rep.raison==="mort" || rep.raison==="deconnect"){
                     window.location.href = `index.php?logout=`+rep.raison;
+                } else {
+                    afficheModal(rep.message,rep.succes);
                 }
             }
             else {
-                majInfosPerso(rep.personnage);
+                majInfos();
+                afficheModal(rep.message,rep.succes);
                 animatedPerso.classList.remove(`static`);
                 animatedPerso.classList.add(`transform`);
                 setTimeout(personnageStatic,1000,`transform`);
@@ -229,6 +330,63 @@ aTransformPoint.forEach(bouton => {
     })
 });
 
+aBtnRecule.addEventListener(`click`,(e)=>{
+    //On arrête le fonctionement par défaut
+    e.preventDefault();
+
+    //Appel du contrôleur pour transformer les points
+    fetch(e.target.href).then(res => {
+        return res.json();
+    }).then(rep => {
+        if(rep.succes === false){
+            if(rep.raison==="mort" || rep.raison==="deconnect"){
+                window.location.href = `index.php?logout=`+rep.raison;
+            } else {
+                afficheModal(rep.message,rep.succes);
+            }
+        }
+        else {
+            majInfos();
+            changeStage(rep.prevStage,rep.stage);
+            afficheModal(rep.message,rep.succes);
+            //animatedPerso.classList.remove(`static`);
+            //animatedPerso.classList.add(`moove`);
+            //setTimeout(personnageStatic,1000,`moove`);
+        }
+        //console.log(rep);
+    }).catch(err => {
+        console.log(err);
+    });
+});
+
+aBtnAvance.addEventListener(`click`,(e)=>{
+    //On arrête le fonctionement par défaut
+    e.preventDefault();
+
+    //Appel du contrôleur pour transformer les points
+    fetch(e.target.href).then(res => {
+        return res.json();
+    }).then(rep => {
+        if(rep.succes === false){
+            if(rep.raison==="mort" || rep.raison==="deconnect"){
+                window.location.href = `index.php?logout=`+rep.raison;
+            } else {
+                afficheModal(rep.message,rep.succes);
+            }
+        }
+        else {
+            majInfos();
+            changeStage(rep.prevStage,rep.stage);
+            afficheModal(rep.message,rep.succes);
+            //animatedPerso.classList.remove(`static`);
+            //animatedPerso.classList.add(`moove`);
+            //setTimeout(personnageStatic,1000,`moove`);
+        }
+        //console.log(rep);
+    }).catch(err => {
+        console.log(err);
+    });
+});
 
 
 //Timer pour la mise à jour régulière des informations

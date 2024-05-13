@@ -238,12 +238,11 @@ class personnage extends _model {
     /**
      * Déclenche l'action d'attente pour le personnage
      *
-     * @param  integer $intRoom Pièce dans laquelle le personnage attend
      * @return boolean True si l'action est validée sinon False
      */
-    function waiting($intRoom){
-        //On vérifie que le personnage est bien toujours dans la pièce
-        if($intRoom == $this->get("piece_actuelle")->id()){
+    function waiting(){
+        //On vérifie que le personnage n'a pas d'action dans les 10 dernières secondes
+
             //On calcule les points d'agilités
             $newAgilite = $this->get("points_d_agilite") + 1;
             $this->set("points_d_agilite",$newAgilite);
@@ -253,10 +252,6 @@ class personnage extends _model {
             $this->enregistrerAction("ATT",$this);
 
             return true;
-        }
-        else {
-            return false;
-        }
     }
 
     /**

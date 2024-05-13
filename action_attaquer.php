@@ -40,6 +40,11 @@ if( ! $objPersonnage->stillAlive()) {
     $arrayRetour["raison"] = "mort";
     $arrayRetour["message"] = "Vous êtes mort au combat !";
 }
+else if($objPersonnage->get("piece_actuelle")->get("is_entree") || $objPersonnage->get("piece_actuelle")->get("is_sortie")) {
+    $arrayRetour["succes"] = false;
+    $arrayRetour["raison"] = "echec";
+    $arrayRetour["message"] = "Du calme, il est interdit d'attaquer à l'entrée ou à la sortie !";
+}
 else {
     if($objPersonnage->attaquer($idAdversaire)){
         $arrayRetour["succes"] = true;

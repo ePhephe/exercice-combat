@@ -8,18 +8,17 @@
 </head>
 <body>
     <main class="etage<?= $objPersonnage->get("piece_actuelle")->get("numero") ?> flex align-center direction-column">
-        <h1 class="ingame flex justify-center align-center"><?= $objPersonnage->get("piece_actuelle")->get("nom") ?> (<?= $objPersonnage->get("piece_actuelle")->get("numero") ?>)</h1>
+        <h1 class="ingame flex justify-center align-center">
+            <?= $objPersonnage->get("piece_actuelle")->get("nom") ?> (<?= $objPersonnage->get("piece_actuelle")->get("numero") ?>)<br>
+            <span><?php if($objPersonnage->get("piece_actuelle")->get("is_sortie")==="O") { ?>Vous êtes arrivé au bout, bravo guerrier ! <?php } ?></span>
+        </h1>
         <a class="btn-deconnexion" href="deconnecter.php"><img src="img/icon-logout.png" alt="Icone de déconnexion"></a>
         <section class="personnage flex justify-center">
-            <?php if($objPersonnage->get("piece_actuelle")->get("is_entree")==="N") { ?>
-            <div class="deplacement flex justify-center align-center"><a href="action_deplacement.php?sens=REC">reculer</a></div>
-            <?php } ?>
+            <div class="deplacement flex justify-center align-center <?php if($objPersonnage->get("piece_actuelle")->get("is_entree")==="O") { ?> d-none <?php } ?>" id="buttonRecule"><a href="action_deplacement.php?sens=REC">reculer</a></div>
             <div class="personnage flex align-center gap20">
                 <div class="animated-personnage static"></div>
             </div>
-            <?php if($objPersonnage->get("piece_actuelle")->get("is_sortie")==="N") { ?>
-            <div class="deplacement flex justify-center align-center"><a href="action_deplacement.php?sens=AVA">avancer</a></div>
-            <?php } ?>
+            <div class="deplacement flex justify-center align-center <?php if($objPersonnage->get("piece_actuelle")->get("is_sortie")==="O") { ?> d-none <?php } ?>" id="buttonAvance"><a href="action_deplacement.php?sens=AVA">avancer</a></div>
         </section>
         <section class="infos flex justify-between align-center">
             <div class="infos-personnage flex justify-around align-center">
@@ -61,6 +60,12 @@
                 </table>
             </div>
         </section>
+        <!-- Message de retour AJAX -->
+        <div class="modal d-none">
+            <div>
+                
+            </div>
+        </div>
     </main>
     <script>
         let idSalle = <?= $objPersonnage->get("piece_actuelle")->id() ?>;

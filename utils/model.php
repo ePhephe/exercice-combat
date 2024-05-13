@@ -165,14 +165,20 @@ class _model {
                 $value = $this->fields[$fieldName]["max"];
         }
 
-        
-
         if(array_key_exists("min",$this->fields[$fieldName])) {
             if($value < $this->fields[$fieldName]["min"])
                 $value = $this->fields[$fieldName]["min"];
         }
-
+        
         $this->values[$fieldName] = $value;
+
+        if($this->fields[$fieldName]["type"] === "object") {
+            // On instancie un nouvel objet à jour
+            $obj = new $this->fields[$fieldName]["nom_objet"]();
+            $obj->load($value);
+            $this->values[$fieldName."_object"] = $obj;
+        }
+
         return true;
     }
 

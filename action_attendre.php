@@ -2,8 +2,7 @@
 
 /**
  * Contrôleur : Gère l'action quand un personnage attend dans une salle
- * Paramètres : 
- *      GET idSalle - Salle dans laquelle on se trouve
+ * Paramètres : N.C
  */
 
 
@@ -15,15 +14,7 @@ require_once "utils/verif_connexion_json.php";
 /**
  * Récupération des paramètres
  */
-//On récupère la salle courrante
-if(!isSet($_GET["idSalle"])){
-    $arrayRetour["succes"] = false;
-    $arrayRetour["raison"] = "param";
-    $arrayRetour["message"] = "Aucune salle passée en paramètre ! ";
-}
-else {
-    $idSalle = $_GET["idSalle"];
-}
+//Non concerné
 
 /**
  * Traitements
@@ -41,7 +32,7 @@ if( ! $objPersonnage->stillAlive()) {
     $arrayRetour["message"] = "Vous êtes mort au combat !";
 }
 else {
-    if($objPersonnage->waiting($idSalle)){
+    if($objPersonnage->waiting()){
         $arrayRetour["succes"] = true;
         $arrayRetour["message"] = "Vous avez récupéré 1 point d'agilité ! ";
         $arrayRetour["personnage"] = $objPersonnage->getToTab();

@@ -30,12 +30,13 @@ h1 {
     letter-spacing: 0.5rem;
     font-size: 1rem;
     text-shadow: 10px 5px 5px black;
+    width: 80%;
 }
 h1 span {
     font-family: "Tekken";
-    font-size: 5rem;
-    letter-spacing: 2rem;
-    color: rgb(190, 0, 0);
+    font-size: 1rem;
+    letter-spacing: 1rem;
+    color: rgb(38, 190, 0);
     text-shadow: 10px 5px 5px black;
 }
 /* Liens */
@@ -102,6 +103,26 @@ img {
 /* Affichage */
 .d-none {
     display: none;
+}
+
+/* Modal */
+div.modal {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 350px;
+    background-color: orange;
+    border: 5px solid orangered;
+    border-radius: 20px;
+    padding: 20px;
+}
+div.modal.succes {
+    background-color: rgb(180, 255, 180);
+    border: 5px solid green;
+}
+div.modal.echec {
+    background-color: rgb(255, 180, 180);
+    border: 5px solid red;
 }
 
 /* Formulaire */
