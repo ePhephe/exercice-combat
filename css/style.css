@@ -534,6 +534,17 @@ main.etage10 {
     animation: attack 1s steps(6) infinite;
 }
 
+.avance {
+    width: 317px;
+    /*animation: avance 200ms infinite;*/
+    background-position-x: -5259px;
+}
+
+.recule {
+    width: 254px;
+    animation: recule 200ms infinite;
+}
+
 @keyframes waiting {
     from {
         background-position-x: -214px;
@@ -563,4 +574,25 @@ main.etage10 {
         background-position-x: -4942px;
     }
 }
+
+@keyframes avance {
+    from {
+        background-position-x: -4942px;
+    }
+
+    to {
+        background-position-x: -5259px;
+    }
+}
+
+@keyframes recule {
+    from {
+        background-position-x: -5576px;
+    }
+
+    to {
+        background-position-x: -5830px;
+    }
+}
+
 

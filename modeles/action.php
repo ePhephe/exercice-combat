@@ -128,4 +128,45 @@ class action extends _model {
   
         return $arrayObjResultat;
     }
+
+    /**
+     * Retourne le datetime de la dernière action d'un personnage
+     *
+     * @param  integer $id Identifiant du personne dont on veut les actions
+     * @return mixed Objet date de la dernière action ou false si une erreur est rencontrée
+     */
+    function lastActionPersonnage($id){
+        //On construit la requête
+        $arrayFields = [];
+        $arrayParam = [];
+        foreach ($this->fields as $fieldName => $field) {
+            $arrayFields[] = "`$fieldName`";
+        }
+        $strRequete = "SELECT MAX(date) AS lastDate FROM `$this->table` ";
+        $strRequete .= "WHERE `initiateur` = :idPerso AND `code` <> 'ATT' ";
+        $arrayParam[":idPerso"] = $id;
+
+        //On prépare la requête
+        $bdd = static::bdd();
+        $req = $bdd->prepare($strRequete);
+
+        //var_dump($strRequete);
+
+        //On exécute la requête avec ses paramètres et on gère les erreurs
+        if ( ! $req->execute($arrayParam)) { 
+            var_dump($strRequete);
+            var_dump($arrayParam);
+            return false;
+        }
+
+        //On récupère les résultats et on gère les erreurs
+        $arrayResultats = $req->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($arrayResultats)) {
+            return false;
+        }
+
+        $objDateAction = new DateTime($arrayResultats[0]["lastDate"]);
+  
+        return $objDateAction;
+    }
 }

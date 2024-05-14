@@ -12,9 +12,9 @@ let divMessageModal = document.querySelector(`.modal div`);
 let main = document.querySelector(`main`);
 let h1 = document.querySelector(`h1`);
 let btnAvance = document.getElementById(`buttonAvance`);
-let aBtnAvance = document.querySelector(`#buttonRecule a`);
+let aBtnAvance = document.querySelector(`#buttonAvance a`);
 let btnRecule = document.getElementById(`buttonRecule`);
-let aBtnRecule = document.querySelector(`#buttonAvance a`);
+let aBtnRecule = document.querySelector(`#buttonRecule a`);
 
 /**
  * Change le stage sur lequel évolue le personnage
@@ -349,9 +349,9 @@ aBtnRecule.addEventListener(`click`,(e)=>{
             majInfos();
             changeStage(rep.prevStage,rep.stage);
             afficheModal(rep.message,rep.succes);
-            //animatedPerso.classList.remove(`static`);
-            //animatedPerso.classList.add(`moove`);
-            //setTimeout(personnageStatic,1000,`moove`);
+            animatedPerso.classList.remove(`static`);
+            animatedPerso.classList.add(`recule`);
+            setTimeout(personnageStatic,2000,`recule`);
         }
         //console.log(rep);
     }).catch(err => {
@@ -378,9 +378,9 @@ aBtnAvance.addEventListener(`click`,(e)=>{
             majInfos();
             changeStage(rep.prevStage,rep.stage);
             afficheModal(rep.message,rep.succes);
-            //animatedPerso.classList.remove(`static`);
-            //animatedPerso.classList.add(`moove`);
-            //setTimeout(personnageStatic,1000,`moove`);
+            animatedPerso.classList.remove(`static`);
+            animatedPerso.classList.add(`avance`);
+            setTimeout(personnageStatic,2000,`avance`);
         }
         //console.log(rep);
     }).catch(err => {

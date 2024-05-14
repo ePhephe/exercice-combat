@@ -17,6 +17,8 @@
             <div class="deplacement flex justify-center align-center <?php if($objPersonnage->get("piece_actuelle")->get("is_entree")==="O") { ?> d-none <?php } ?>" id="buttonRecule"><a href="action_deplacement.php?sens=REC">reculer</a></div>
             <div class="personnage flex align-center gap20">
                 <div class="animated-personnage static"></div>
+                <div class="animated-personnage recule"></div>
+                <div class="animated-personnage avance"></div>
             </div>
             <div class="deplacement flex justify-center align-center <?php if($objPersonnage->get("piece_actuelle")->get("is_sortie")==="O") { ?> d-none <?php } ?>" id="buttonAvance"><a href="action_deplacement.php?sens=AVA">avancer</a></div>
         </section>

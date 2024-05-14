@@ -242,7 +242,11 @@ class personnage extends _model {
      */
     function waiting(){
         //On vérifie que le personnage n'a pas d'action dans les 10 dernières secondes
+        $objAction = new action();
+        $objDateNow = new DateTime();
+        $objDateLastAction = $objAction->lastActionPersonnage($this->id());
 
+       if($objDateNow->getTimestamp()-$objDateLastAction->getTimestamp() > 10) {
             //On calcule les points d'agilités
             $newAgilite = $this->get("points_d_agilite") + 1;
             $this->set("points_d_agilite",$newAgilite);
@@ -252,6 +256,10 @@ class personnage extends _model {
             $this->enregistrerAction("ATT",$this);
 
             return true;
+       }
+       else {
+            return false;
+       }
     }
 
     /**
