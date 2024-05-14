@@ -39,6 +39,13 @@ h1 span {
     color: rgb(38, 190, 0);
     text-shadow: 10px 5px 5px black;
 }
+h1 span.titre {
+    font-family: "Tekken";
+    font-size: 5rem;
+    letter-spacing: 1rem;
+    color: rgb(218,165,32);
+    text-shadow: 10px 5px 5px black;
+}
 /* Liens */
 a {
     text-decoration: none;
@@ -536,13 +543,12 @@ main.etage10 {
 
 .avance {
     width: 317px;
-    /*animation: avance 200ms infinite;*/
-    background-position-x: -5259px;
+    animation: avance 1s steps(2) infinite;
 }
 
 .recule {
     width: 254px;
-    animation: recule 200ms infinite;
+    animation: recule 1s steps(2) infinite;
 }
 
 @keyframes waiting {
@@ -577,21 +583,21 @@ main.etage10 {
 
 @keyframes avance {
     from {
-        background-position-x: -4942px;
+        background-position-x: -4996px;
     }
 
     to {
-        background-position-x: -5259px;
+        background-position-x: -5630px;
     }
 }
 
 @keyframes recule {
     from {
-        background-position-x: -5576px;
+        background-position-x: -5947px;
     }
 
     to {
-        background-position-x: -5830px;
+        background-position-x: -6455px;
     }
 }
 

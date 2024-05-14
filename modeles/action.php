@@ -56,7 +56,7 @@ class action extends _model {
             "type"=>"datetime",
             "libelle"=>"Date et heure de l'action",
             "unique" => "N",
-            "format" => "Y-m-d H:m:s",
+            "format" => "Y-m-d H:i:s",
         ]
     ]; 
 

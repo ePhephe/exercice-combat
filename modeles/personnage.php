@@ -539,7 +539,7 @@ class personnage extends _model {
         //On initialise les variables
         $objAction->set("code",$strAction);
         $objAction->set("description",$strDescription);
-        $objAction->set("date",date("Y-m-d H:m:s"));
+        $objAction->set("date",date("Y-m-d H:i:s"));
         $objAction->set("initiateur",$objPersoInit->id());
         if($objPersoCible != null)
             $objAction->set("cible",$objPersoCible->id());

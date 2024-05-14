@@ -8,17 +8,18 @@
 </head>
 <body>
     <main class="etage<?= $objPersonnage->get("piece_actuelle")->get("numero") ?> flex align-center direction-column">
-        <h1 class="ingame flex justify-center align-center">
-            <?= $objPersonnage->get("piece_actuelle")->get("nom") ?> (<?= $objPersonnage->get("piece_actuelle")->get("numero") ?>)<br>
-            <span><?php if($objPersonnage->get("piece_actuelle")->get("is_sortie")==="O") { ?>Vous êtes arrivé au bout, bravo guerrier ! <?php } ?></span>
+        <h1 class="ingame flex justify-center align-center direction-column gap20">
+            <?= $objPersonnage->get("piece_actuelle")->get("nom") ?> (<?= $objPersonnage->get("piece_actuelle")->get("numero") ?>)
+            <span>
+                <?php if($objPersonnage->get("piece_actuelle")->get("is_sortie")==="O") { ?>Vous êtes arrivé au bout, bravo guerrier ! <?php } ?>
+                <?php if($objPersonnage->get("piece_actuelle")->get("is_entree")==="O") { ?>Vous êtes à l'entrée, en avant ! <?php } ?>
+            </span>
         </h1>
         <a class="btn-deconnexion" href="deconnecter.php"><img src="img/icon-logout.png" alt="Icone de déconnexion"></a>
         <section class="personnage flex justify-center">
             <div class="deplacement flex justify-center align-center <?php if($objPersonnage->get("piece_actuelle")->get("is_entree")==="O") { ?> d-none <?php } ?>" id="buttonRecule"><a href="action_deplacement.php?sens=REC">reculer</a></div>
             <div class="personnage flex align-center gap20">
                 <div class="animated-personnage static"></div>
-                <div class="animated-personnage recule"></div>
-                <div class="animated-personnage avance"></div>
             </div>
             <div class="deplacement flex justify-center align-center <?php if($objPersonnage->get("piece_actuelle")->get("is_sortie")==="O") { ?> d-none <?php } ?>" id="buttonAvance"><a href="action_deplacement.php?sens=AVA">avancer</a></div>
         </section>
