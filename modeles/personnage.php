@@ -77,12 +77,10 @@ class personnage extends _model {
      * @param  mixed $valeur Valeur du champ
      * @return void
      */
-    /*
     function set_password($valeur){
         //On vérifie que le code de l'action existe
         $this->values["password"] = password_hash($valeur,PASSWORD_BCRYPT);
     }
-    */
     
     /**
      * Connexion au personnage
